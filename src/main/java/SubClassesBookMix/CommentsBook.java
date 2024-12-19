@@ -1,8 +1,10 @@
-package Classes;
+package SubClassesBookMix;
 
+import lombok.Getter;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+@Getter
 public class CommentsBook
 {
     protected String Name;
@@ -37,19 +39,6 @@ public class CommentsBook
         }
         else this.Rating = -1;
     }
-
-    /*@Override
-    public String toString() {
-        return "CommentsBook{" +
-                "Name='" + Name + '\'' +
-                ", Author='" + Author + '\'' +
-                ", PicAddress='" + PicAddress + '\'' +
-                ", Comment='" + Comment + '\'' +
-                ", AuthorComment='" + AuthorComment + '\'' +
-                ", Rating=" + Rating +
-                '}';
-    }*/
-
     @Override
     public String toString() {
         return "CommentsBook{" + "Name=" + Name + ", Author=" + Author + ", PicAddress=" + PicAddress + ", Comment=" + Comment + ", AuthorComment=" + AuthorComment + ", Rating=" + Rating;

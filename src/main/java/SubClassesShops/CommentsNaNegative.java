@@ -1,9 +1,11 @@
-package Classes;
+package SubClassesShops;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import org.jsoup.select.Elements;
 
 @AllArgsConstructor
+@Getter
 public class CommentsNaNegative
 {
     protected int rate;

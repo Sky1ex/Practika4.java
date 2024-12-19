@@ -1,11 +1,11 @@
 package Classes;
 
 import JsonParser.*;
+import SubClassesBookMix.CommentsBook;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
-import Classes.*;
 
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -13,16 +13,17 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.concurrent.*;
 
-public class BookMixReader<T> {
-    private final String PATH = "src/main/java/Data/DatasetBook.json";
+public class BookMixReader<T>
+{
+    private static final String PATH = "src/main/java/Data/DatasetBook.json";
 
-    ExecutorService executorService;
+    static ExecutorService executorService;
 
     public BookMixReader() {
         executorService = Executors.newWorkStealingPool();
     }
 
-    public ArrayList<CommentsBook> GetCommentList(int pageNumber)
+    public static ArrayList<CommentsBook> GetCommentList(int pageNumber)
     {
         ArrayList<CommentsBook> Data = new ArrayList<CommentsBook>();
         Document doc, comment;
@@ -49,10 +50,10 @@ public class BookMixReader<T> {
             int imgCount = Data.size();
             for (int i = 0; i < imgCount; i++)
             {
-                if (!Data.get(i).PicAddress.startsWith("http")) continue;
-                Connection.Response resultImageResponse = Jsoup.connect(Data.get(i).PicAddress)
+                if (!Data.get(i).getPicAddress().startsWith("http")) continue;
+                Connection.Response resultImageResponse = Jsoup.connect(Data.get(i).getPicAddress())
                         .ignoreContentType(true).execute();
-                String temp = Data.get(i).Name;
+                String temp = Data.get(i).getName();
                 temp = temp.replaceAll("[/|\\\\|:|*|?|\"|<|>]", "");
                 FileOutputStream out = (new FileOutputStream(new java.io.File("src/main/java/Data/PicsBook/" + temp + ".jpg")));
                 out.write(resultImageResponse.bodyAsBytes());
@@ -68,24 +69,7 @@ public class BookMixReader<T> {
         return Data;
     }
 
-    public static void PrintOnlyFive(ArrayList<Book> books)
-    {
-        boolean flag = true;
-        for(int i = 0; i < books.size(); i++)
-        {
-            flag = true;
-            for(int j = 0; j < books.get(i).comments.size(); j++)
-            {
-                if(books.get(i).comments.get(j).rate != 5) {
-                    flag = false;
-                    break;
-                }
-            }
-            if(flag) System.out.println(books.get(i).toString());
-        }
-    }
-
-    public void GetAllCommentPagesAndWriteToJson() throws IOException, InterruptedException, ExecutionException, NoSuchFieldException, IllegalAccessException {
+    public static void GetAllCommentPagesAndWriteToJson() throws IOException, InterruptedException, ExecutionException, NoSuchFieldException, IllegalAccessException {
         Document page = Jsoup.connect("https://bookmix.ru/comments/").get();
         int max = Integer.parseInt(page.select("div.col-12 > div > ul > li:nth-child(9) > a").getFirst().text());
         CountDownLatch latch = new CountDownLatch(100 + 1);
@@ -111,7 +95,7 @@ public class BookMixReader<T> {
                 JsonParser<CommentsBook> parser = new JsonParser<CommentsBook>();
                 try {
                     System.out.println("\nЗапись данных в json файл...");
-                    parser.Write(MainData);
+                    parser.WriteJson(MainData);
                     writer.write(parser.getText());
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);

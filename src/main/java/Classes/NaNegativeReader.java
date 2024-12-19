@@ -1,31 +1,27 @@
 package Classes;
 
 import JsonParser.JsonParser;
-import org.jsoup.Connection;
+import SubClassesShops.Shop;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.FileOutputStream;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.Writer;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.*;
-import java.util.stream.Stream;
 
-public class NaNegativeParser<T> {
-    private final String PATH = "src/main/java/Data/DatasetNaNegative.json";
+public class NaNegativeReader<T>
+{
+    private static final String PATH = "src/main/java/Data/DatasetNaNegative.json";
 
-    ExecutorService executorService;
+    static ExecutorService executorService;
 
-    public NaNegativeParser() {
+    public NaNegativeReader() {
         executorService = Executors.newWorkStealingPool();
     }
 
-    public Shop GetCommentList(Elements elements) throws IOException {
+    public static Shop GetCommentList(Elements elements) throws IOException {
         Document ShopPage;
 
         int check = Integer.parseInt(elements.select("span[class^=num]").text());
@@ -63,7 +59,7 @@ public class NaNegativeParser<T> {
         return tempShop;
     }
 
-    public void GetAllCommentPagesAndWriteToJson() throws IOException, InterruptedException, ExecutionException, NoSuchFieldException, IllegalAccessException
+    public static void GetAllCommentPagesAndWriteToJson() throws IOException, InterruptedException, ExecutionException, NoSuchFieldException, IllegalAccessException
     {
 
         String html = "https://na-negative.ru/internet-magaziny?page=" +1;
@@ -103,7 +99,7 @@ public class NaNegativeParser<T> {
                 latch.await();
                 JsonParser<Shop> parser = new JsonParser<Shop>();
                 try {
-                    parser.Write(MainData);
+                    parser.WriteJson(MainData);
                     writer.write(parser.getText());
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
